@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evolution Studio — Centro de Estética Integral</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- AUTH MODALS -->
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<!-- LOGIN MODAL -->
+<div class="auth-modal" id="loginModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <div class="auth-modal-brand">
+    <span class="auth-logo-text">Evolution <em>Studio</em></span>
+  </div>
+  <h2 class="auth-title">Iniciar sesión</h2>
+  <p class="auth-sub">¿No tenés cuenta? <a href="#" onclick="switchModal('register')">Registrate gratis</a></p>
+  <div id="loginError" class="auth-error" style="display:none"></div>
+  <div class="auth-form">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="tu@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <div class="input-eye">
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+        <button type="button" class="eye-btn" onclick="togglePass('loginPass', this)">👁</button>
+      </div>
+    </div>
+    <div class="form-row-space">
+      <label class="check-label">
+        <input type="checkbox" id="rememberMe"> Recordarme
+      </label>
+      <a href="#" class="forgot-link" onclick="switchModal('forgot')">¿Olvidaste tu contraseña?</a>
+    </div>
+    <button class="auth-btn" onclick="handleLogin()">Ingresar</button>
+    <div class="auth-divider"><span>o continuá con</span></div>
+    <button class="social-btn google-btn" onclick="socialLogin('Google')">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continuar con Google
+    </button>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="auth-modal" id="registerModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <div class="auth-modal-brand">
+    <span class="auth-logo-text">Evolution <em>Studio</em></span>
+  </div>
+  <h2 class="auth-title">Crear cuenta</h2>
+  <p class="auth-sub">¿Ya tenés cuenta? <a href="#" onclick="switchModal('login')">Iniciá sesión</a></p>
+  <div id="registerError" class="auth-error" style="display:none"></div>
+  <div id="registerSuccess" class="auth-success" style="display:none"></div>
+  <div class="auth-form">
+    <div class="form-row-two">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="regNombre" placeholder="Ana">
+      </div>
+      <div class="form-group">
+        <label>Apellido</label>
+        <input type="text" id="regApellido" placeholder="García">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="regEmail" placeholder="tu@email.com">
+    </div>
+    <div class="form-group">
+      <label>Teléfono <span style="color:var(--dim)">(opcional)</span></label>
+      <input type="tel" id="regPhone" placeholder="+54 9 XXX XXX XXXX">
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <div class="input-eye">
+        <input type="password" id="regPass" placeholder="Mínimo 6 caracteres" oninput="checkPassStrength(this.value)">
+        <button type="button" class="eye-btn" onclick="togglePass('regPass', this)">👁</button>
+      </div>
+      <div class="pass-strength" id="passStrength">
+        <div class="strength-bar"><div id="strengthFill"></div></div>
+        <span id="strengthText"></span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Repetir contraseña</label>
+      <div class="input-eye">
+        <input type="password" id="regPass2" placeholder="••••••••">
+        <button type="button" class="eye-btn" onclick="togglePass('regPass2', this)">👁</button>
+      </div>
+    </div>
+    <label class="check-label" style="margin-bottom:16px">
+      <input type="checkbox" id="acceptTerms">
+      Acepto los <a href="#" style="color:var(--accent)">términos y condiciones</a>
+    </label>
+    <button class="auth-btn" onclick="handleRegister()">Crear mi cuenta</button>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="auth-modal" id="forgotModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <div class="auth-modal-brand">
+    <span class="auth-logo-text">Evolution <em>Studio</em></span>
+  </div>
+  <h2 class="auth-title">Recuperar contraseña</h2>
+  <p class="auth-sub">Ingresá tu email y te enviamos un enlace para restablecer tu contraseña.</p>
+  <div id="forgotError" class="auth-error" style="display:none"></div>
+  <div id="forgotSuccess" class="auth-success" style="display:none">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.5 19.79 19.79 0 01.12 1H3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L4.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    <strong>Email enviado.</strong><br>Revisá tu bandeja de entrada (y spam).
+  </div>
+  <div class="auth-form" id="forgotForm">
+    <div class="form-group">
+      <label>Email de tu cuenta</label>
+      <input type="email" id="forgotEmail" placeholder="tu@email.com">
+    </div>
+    <button class="auth-btn" onclick="handleForgot()">Enviar enlace</button>
+    <p style="text-align:center; margin-top:16px"><a href="#" onclick="switchModal('login')" style="font-size:0.75rem; color:var(--dim)">← Volver al login</a></p>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="auth-modal wide-modal" id="profileModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <div class="profile-header">
+    <div class="profile-avatar" id="profileAvatar">A</div>
+    <div>
+      <h2 class="profile-name" id="profileName">Ana García</h2>
+      <p class="profile-member">Miembro desde <span id="profileSince"></span></p>
+    </div>
+  </div>
+  <div class="profile-tabs">
+    <button class="profile-tab active" onclick="switchTab('turnos', this)">Mis turnos</button>
+    <button class="profile-tab" onclick="switchTab('datos', this)">Mis datos</button>
+    <button class="profile-tab" onclick="switchTab('favoritos', this)">Favoritos</button>
+  </div>
+
+  <!-- TURNOS TAB -->
+  <div class="tab-content active" id="tab-turnos">
+    <div class="turnos-header">
+      <h3>Historial de turnos</h3>
+      <button class="btn-nuevo-turno" onclick="closeAllModals(); document.getElementById('bookingModal').classList.add('active'); document.getElementById('modalOverlay').classList.add('active')">+ Reservar turno</button>
+    </div>
+    <div id="turnosList" class="turnos-list"></div>
+  </div>
+
+  <!-- DATOS TAB -->
+  <div class="tab-content" id="tab-datos">
+    <h3 style="margin-bottom:24px; font-family:var(--serif); font-weight:300; font-size:1.5rem">Mis datos personales</h3>
+    <div id="datosEditError" class="auth-error" style="display:none"></div>
+    <div id="datosEditSuccess" class="auth-success" style="display:none"></div>
+    <div class="form-row-two">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="editNombre">
+      </div>
+      <div class="form-group">
+        <label>Apellido</label>
+        <input type="text" id="editApellido">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="editEmail">
+    </div>
+    <div class="form-group">
+      <label>Teléfono</label>
+      <input type="tel" id="editPhone">
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.07); padding-top:24px; margin-top:8px">
+      <h4 style="font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--dim); margin-bottom:16px">Cambiar contraseña</h4>
+      <div class="form-group">
+        <label>Contraseña actual</label>
+        <input type="password" id="editPassOld" placeholder="••••••••">
+      </div>
+      <div class="form-row-two">
+        <div class="form-group">
+          <label>Nueva contraseña</label>
+          <input type="password" id="editPassNew" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label>Repetir nueva</label>
+          <input type="password" id="editPassNew2" placeholder="••••••••">
+        </div>
+      </div>
+    </div>
+    <button class="auth-btn" onclick="saveProfile()">Guardar cambios</button>
+    <button class="btn-logout-red" onclick="confirmDelete()">Eliminar mi cuenta</button>
+  </div>
+
+  <!-- FAVORITOS TAB -->
+  <div class="tab-content" id="tab-favoritos">
+    <h3 style="margin-bottom:24px; font-family:var(--serif); font-weight:300; font-size:1.5rem">Servicios favoritos</h3>
+    <div class="favoritos-grid" id="favGrid"></div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="auth-modal wide-modal" id="bookingModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <h2 class="auth-title">Reservar turno</h2>
+  <p class="auth-sub">Elegí tu servicio y horario preferido</p>
+  <div id="bookingError" class="auth-error" style="display:none"></div>
+  <div id="bookingSuccess" class="auth-success" style="display:none">
+    ✓ ¡Turno reservado! Te enviamos la confirmación por email.
+  </div>
+  <div class="booking-steps" id="bookingStepsContent">
+    <div class="form-group">
+      <label>Profesional</label>
+      <div class="prof-selector" id="profSelector">
+        <button type="button" class="prof-option active" onclick="selectProf(this, 'Cualquier profesional')">
+          <div class="prof-avatar">⭐</div>
+          <span>Cualquiera</span>
+        </button>
+        <button type="button" class="prof-option" onclick="selectProf(this, 'Valentina')">
+          <div class="prof-avatar prof-v">V</div>
+          <span>Valentina</span>
+        </button>
+        <button type="button" class="prof-option" onclick="selectProf(this, 'Camila')">
+          <div class="prof-avatar prof-c">C</div>
+          <span>Camila</span>
+        </button>
+        <button type="button" class="prof-option" onclick="selectProf(this, 'Rodrigo')">
+          <div class="prof-avatar prof-r">R</div>
+          <span>Rodrigo</span>
+        </button>
+      </div>
+      <input type="hidden" id="bookProf" value="Cualquier profesional">
+    </div>
+    <div class="form-group">
+      <label>Servicio</label>
+      <select id="bookService">
+        <option value="">— Seleccioná un servicio —</option>
+        <optgroup label="Peluquería">
+          <option value="Corte hombre — $5.000">Corte hombre — $5.000</option>
+          <option value="Corte mujer — $7.000">Corte mujer — $7.000</option>
+          <option value="Lavado + peinado — $6.000">Lavado + peinado — $6.000</option>
+        </optgroup>
+        <optgroup label="Barbería">
+          <option value="Corte + barba — $6.500">Corte + barba — $6.500</option>
+          <option value="Arreglo de barba — $3.500">Arreglo de barba — $3.500</option>
+        </optgroup>
+        <optgroup label="Manos & Pies">
+          <option value="Manicura — $4.000">Manicura — $4.000</option>
+          <option value="Pedicura — $4.500">Pedicura — $4.500</option>
+        </optgroup>
+        <optgroup label="Tratamientos">
+          <option value="Depilación definitiva — desde $8.000">Depilación definitiva — desde $8.000</option>
+          <option value="Tratamiento facial — $9.000">Tratamiento facial — $9.000</option>
+          <option value="Tratamiento corporal — $10.000">Tratamiento corporal — $10.000</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="form-row-two">
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="bookDate">
+      </div>
+      <div class="form-group">
+        <label>Horario</label>
+        <select id="bookTime">
+          <option value="">— Seleccioná —</option>
+          <option>09:00</option><option>09:30</option><option>10:00</option>
+          <option>10:30</option><option>11:00</option><option>11:30</option>
+          <option>12:00</option><option>14:00</option><option>14:30</option>
+          <option>15:00</option><option>15:30</option><option>16:00</option>
+          <option>16:30</option><option>17:00</option><option>17:30</option>
+          <option>18:00</option><option>18:30</option><option>19:00</option>
+          <option>19:30</option><option>20:00</option><option>20:30</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notas adicionales <span style="color:var(--dim)">(opcional)</span></label>
+      <textarea id="bookNotes" placeholder="Ej: primera vez, alergia a productos con perfume..." rows="3"></textarea>
+    </div>
+    <button class="auth-btn" onclick="handleBooking()">Confirmar reserva</button>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <img src="assets/logo.png" width="10%" alt="Evolution Studio" class="nav-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+  <span class="nav-logo-text" style="display:none">Evolution Studio</span>
+  <ul class="nav-links">
+    <li><a href="#about">Nosotros</a></li>
+    <li><a href="#services">Servicios</a></li>
+    <li><a href="#gallery">Galería</a></li>
+    <li><a href="#hours">Horarios</a></li>
+    <li><a href="#reviews">Opiniones</a></li>
+    <li><a href="#location">Ubicación</a></li>
+    <li><a href="#cursos">Cursos</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="user-area" id="userAreaGuest">
+      <button class="nav-link-btn" onclick="openModal('loginModal')">Iniciar sesión</button>
+      <button class="nav-cta" onclick="openModal('registerModal')">Crear cuenta</button>
+    </div>
+    <div class="user-area" id="userAreaLogged" style="display:none">
+      <button class="nav-book-btn" onclick="requireLogin(openBooking)">Reservar turno</button>
+      <button class="user-menu-btn" id="userMenuBtn" onclick="toggleUserMenu()">
+        <span class="user-avatar-small" id="navAvatar">A</span>
+        <span id="navUserName">Ana</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="user-dropdown" id="userDropdown">
+        <button onclick="openProfile()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          Mi perfil
+        </button>
+        <button onclick="requireLogin(openBooking)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Mis turnos
+        </button>
+        <div class="dropdown-divider"></div>
+        <button onclick="handleLogout()" class="logout-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-line-left"></div>
+  <div class="hero-line-right"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">La Cumbre, Córdoba — Est. 2020</p>
+    <h1 class="hero-title">Evolution<br><em>Studio</em></h1>
+    <p class="hero-subtitle">Centro de estética integral</p>
+    <div class="hero-buttons">
+      <a href="#" class="hero-cta" onclick="requireLogin(openBooking); return false;">
+        <span>Reservar turno</span>
+        <span class="hero-cta-arrow"></span>
+      </a>
+      <a href="#services" class="hero-cta-ghost">Ver servicios</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="reveal-left">
+      <div class="section-label">Sobre nosotros</div>
+      <h2 class="about-heading">Un espacio para<br>tu <em>bienestar</em><br>integral</h2>
+      <div class="about-divider"></div>
+      <p style="font-size:0.7rem; letter-spacing:0.15em; color:var(--dim); text-transform:uppercase;">Peluquería · Barbería · Estética</p>
+    </div>
+    <div class="reveal">
+      <div class="about-text">
+        <p>Evolution Studio es un centro de estética integral pensado para el cuidado personal tanto masculino como femenino.</p>
+        <p>Ofrecemos servicios de peluquería y barbería, además de belleza de manos y pies, acompañados por tratamientos de depilación definitiva, tratamientos linfáticos, corporales y faciales.</p>
+        <p>Nuestro objetivo es brindarte una experiencia completa, combinando profesionalismo, calidad y bienestar en cada visita.</p>
+      </div>
+      <div class="about-stats">
+        <div class="about-stat"><span class="stat-num">500+</span><span class="stat-label">Clientes satisfechos</span></div>
+        <div class="about-stat"><span class="stat-num">5★</span><span class="stat-label">Calificación promedio</span></div>
+        <div class="about-stat"><span class="stat-num">4</span><span class="stat-label">Años de experiencia</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-inner">
+    <div class="services-header reveal">
+      <div>
+        <div class="section-label">Precios</div>
+        <h2 class="services-heading">Nuestros<br><em>servicios</em></h2>
+      </div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="card-top">
+          <span class="card-icon">💇</span>
+          <div class="card-category">Peluquería</div>
+        </div>
+        <ul class="service-items">
+          <li class="service-item">
+            <span class="item-name">Corte hombre</span>
+            <div class="item-right">
+              <span class="item-price">$5.000</span>
+              <button class="fav-btn" onclick="toggleFav('Corte hombre', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Corte hombre — $5.000')">Reservar</button>
+            </div>
+          </li>
+          <li class="service-item">
+            <span class="item-name">Corte mujer</span>
+            <div class="item-right">
+              <span class="item-price">$7.000</span>
+              <button class="fav-btn" onclick="toggleFav('Corte mujer', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Corte mujer — $7.000')">Reservar</button>
+            </div>
+          </li>
+          <li class="service-item">
+            <span class="item-name">Lavado + peinado</span>
+            <div class="item-right">
+              <span class="item-price">$6.000</span>
+              <button class="fav-btn" onclick="toggleFav('Lavado + peinado', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Lavado + peinado — $6.000')">Reservar</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.1s">
+        <div class="card-top">
+          <span class="card-icon">🧔</span>
+          <div class="card-category">Barbería</div>
+        </div>
+        <ul class="service-items">
+          <li class="service-item">
+            <span class="item-name">Corte + barba</span>
+            <div class="item-right">
+              <span class="item-price">$6.500</span>
+              <button class="fav-btn" onclick="toggleFav('Corte + barba', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Corte + barba — $6.500')">Reservar</button>
+            </div>
+          </li>
+          <li class="service-item">
+            <span class="item-name">Arreglo de barba</span>
+            <div class="item-right">
+              <span class="item-price">$3.500</span>
+              <button class="fav-btn" onclick="toggleFav('Arreglo de barba', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Arreglo de barba — $3.500')">Reservar</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.2s">
+        <div class="card-top">
+          <span class="card-icon">💅</span>
+          <div class="card-category">Manos & Pies</div>
+        </div>
+        <ul class="service-items">
+          <li class="service-item">
+            <span class="item-name">Manicura</span>
+            <div class="item-right">
+              <span class="item-price">$4.000</span>
+              <button class="fav-btn" onclick="toggleFav('Manicura', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Manicura — $4.000')">Reservar</button>
+            </div>
+          </li>
+          <li class="service-item">
+            <span class="item-name">Pedicura</span>
+            <div class="item-right">
+              <span class="item-price">$4.500</span>
+              <button class="fav-btn" onclick="toggleFav('Pedicura', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Pedicura — $4.500')">Reservar</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.3s">
+        <div class="card-top">
+          <span class="card-icon">✨</span>
+          <div class="card-category">Tratamientos</div>
+        </div>
+        <ul class="service-items">
+          <li class="service-item">
+            <span class="item-name">Depilación definitiva</span>
+            <div class="item-right">
+              <span class="item-price">$8.000 <small>desde</small></span>
+              <button class="fav-btn" onclick="toggleFav('Depilación definitiva', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Depilación definitiva — desde $8.000')">Reservar</button>
+            </div>
+          </li>
+          <li class="service-item">
+            <span class="item-name">Tratamiento facial</span>
+            <div class="item-right">
+              <span class="item-price">$9.000</span>
+              <button class="fav-btn" onclick="toggleFav('Tratamiento facial', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Tratamiento facial — $9.000')">Reservar</button>
+            </div>
+          </li>
+          <li class="service-item">
+            <span class="item-name">Tratamiento corporal</span>
+            <div class="item-right">
+              <span class="item-price">$10.000</span>
+              <button class="fav-btn" onclick="toggleFav('Tratamiento corporal', this)" title="Guardar favorito">♡</button>
+              <button class="book-item-btn" onclick="bookService('Tratamiento corporal — $10.000')">Reservar</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURSOS -->
+<section id="cursos">
+  <div class="cursos-inner">
+    <div class="section-label" style="justify-content:center">Formación</div>
+    <h2 class="cursos-title">Cursos</h2>
+    <p class="cursos-subtitle">Formación profesional · Certificados</p>
+    <div class="cursos-grid">
+      <div class="curso-card reveal">
+        <div class="curso-badge">Presencial</div>
+        <h3 class="curso-name">Barbería</h3>
+        <p class="curso-duration">⏱ 3 meses</p>
+        <ul class="curso-includes">
+          <li>Técnicas de corte</li>
+          <li>Arreglo de barba</li>
+          <li>Colorimetría</li>
+          <li>Kit de herramientas</li>
+        </ul>
+        <p class="curso-price">$45.000</p>
+        <a href="https://wa.me/5493548410943?text=Hola,%20me%20interesa%20el%20curso%20de%20Barbería" class="curso-btn" target="_blank">Inscribirme</a>
+      </div>
+      <div class="curso-card featured reveal" style="transition-delay:0.1s">
+        <div class="curso-badge popular">Más popular</div>
+        <h3 class="curso-name">Peluquería</h3>
+        <p class="curso-duration">⏱ 4 meses</p>
+        <ul class="curso-includes">
+          <li>Corte y peinado</li>
+          <li>Coloración y mechas</li>
+          <li>Tratamientos capilares</li>
+          <li>Prácticas reales</li>
+        </ul>
+        <p class="curso-price">$60.000</p>
+        <a href="https://wa.me/5493548410943?text=Hola,%20me%20interesa%20el%20curso%20de%20Peluquería" class="curso-btn" target="_blank">Inscribirme</a>
+      </div>
+      <div class="curso-card reveal" style="transition-delay:0.2s">
+        <div class="curso-badge">Presencial</div>
+        <h3 class="curso-name">Manicuría</h3>
+        <p class="curso-duration">⏱ 2 meses</p>
+        <ul class="curso-includes">
+          <li>Manicura y pedicura</li>
+          <li>Semipermanente</li>
+          <li>Nail art básico</li>
+          <li>Materiales incluidos</li>
+        </ul>
+        <p class="curso-price">$30.000</p>
+        <a href="https://wa.me/5493548410943?text=Hola,%20me%20interesa%20el%20curso%20de%20Manicuría" class="curso-btn" target="_blank">Inscribirme</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-inner">
+    <div class="section-label reveal" style="justify-content:center">Portfolio</div>
+    <h2 class="gallery-heading reveal">Nuestros<br><em>trabajos</em></h2>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item gallery-item--tall">
+        <div class="gallery-placeholder">
+          <span class="gallery-icon">💇‍♂️</span>
+          <span class="gallery-label">Corte caballero</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <span class="gallery-icon">🧔</span>
+          <span class="gallery-label">Barba trabajada</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <span class="gallery-icon">💇‍♀️</span>
+          <span class="gallery-label">Corte femenino</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-item--wide">
+        <div class="gallery-placeholder">
+          <span class="gallery-icon">✨</span>
+          <span class="gallery-label">Tratamiento facial</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <span class="gallery-icon">💅</span>
+          <span class="gallery-label">Manicura</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <span class="gallery-icon">🎨</span>
+          <span class="gallery-label">Coloración</span>
+        </div>
+      </div>
+    </div>
+    <p class="gallery-cta-text reveal">¿Querés ver más? Seguinos en Instagram</p>
+    <a href="#" class="gallery-ig-btn reveal" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+      @evolutionstudio
+    </a>
+  </div>
+</section>
+
+<!-- HOURS -->
+<section id="hours">
+  <div class="hours-inner">
+    <div class="reveal">
+      <div class="section-label" style="justify-content:center">Horarios</div>
+      <div class="hours-status" id="status">
+        <span class="status-dot"></span>
+        <span id="statusText">Abierto ahora</span>
+      </div>
+      <div class="hours-time">9:00 — 21:00</div>
+      <p class="hours-days">Lunes a Sábado</p>
+    </div>
+    <div class="hours-decoration reveal">
+      <div class="hours-stat">
+        <span class="hours-stat-num">12</span>
+        <span class="hours-stat-label">Horas de atención</span>
+      </div>
+      <div class="hours-stat">
+        <span class="hours-stat-num">6</span>
+        <span class="hours-stat-label">Días a la semana</span>
+      </div>
+      <div class="hours-stat">
+        <span class="hours-stat-num">∞</span>
+        <span class="hours-stat-label">Servicios disponibles</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-inner">
+    <div class="section-label reveal">Opiniones</div>
+    <h2 class="reviews-heading reveal">Lo que dicen<br><em>nuestros clientes</em></h2>
+    <div class="reviews-grid">
+      <div class="review-card reveal">
+        <div class="review-top">
+          <div class="reviewer-avatar">M</div>
+          <div>
+            <strong class="reviewer-name">Martina G.</strong>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"El mejor lugar para cortarse el pelo en La Cumbre. Atención impecable, ambiente increíble y resultados profesionales."</p>
+        <div class="review-meta">Cliente frecuente · hace 2 semanas</div>
+      </div>
+      <div class="review-card reveal" style="transition-delay:0.1s">
+        <div class="review-top">
+          <div class="reviewer-avatar">L</div>
+          <div>
+            <strong class="reviewer-name">Lucía P.</strong>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"Fui por el tratamiento facial y fue una experiencia completamente diferente. Resultados visibles desde la primera sesión."</p>
+        <div class="review-meta">Tratamientos faciales · hace 1 mes</div>
+      </div>
+      <div class="review-card reveal" style="transition-delay:0.2s">
+        <div class="review-top">
+          <div class="reviewer-avatar">S</div>
+          <div>
+            <strong class="reviewer-name">Santiago R.</strong>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"El servicio de barbería es top. Profesionales que realmente saben lo que hacen. Muy recomendable."</p>
+        <div class="review-meta">Barbería · hace 3 semanas</div>
+      </div>
+    </div>
+    <!-- DEJAR RESEÑA -->
+    <div class="leave-review reveal">
+      <h3 class="leave-review-title">¿Fuiste al local? <em>Dejá tu opinión</em></h3>
+      <div id="reviewFormMsg" class="auth-success" style="display:none">✓ ¡Gracias por tu reseña! Aparecerá en breve.</div>
+      <div class="review-form" id="reviewForm">
+        <div class="form-row-two">
+          <div class="form-group">
+            <label>Tu nombre</label>
+            <input type="text" id="reviewName" placeholder="Ej: María G.">
+          </div>
+          <div class="form-group">
+            <label>Servicio recibido</label>
+            <input type="text" id="reviewService" placeholder="Ej: Corte + barba">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Puntuación</label>
+          <div class="star-picker" id="starPicker">
+            <button type="button" class="star-pick" data-val="1" onclick="pickStar(1)">★</button>
+            <button type="button" class="star-pick" data-val="2" onclick="pickStar(2)">★</button>
+            <button type="button" class="star-pick" data-val="3" onclick="pickStar(3)">★</button>
+            <button type="button" class="star-pick" data-val="4" onclick="pickStar(4)">★</button>
+            <button type="button" class="star-pick" data-val="5" onclick="pickStar(5)">★</button>
+          </div>
+          <input type="hidden" id="reviewStars" value="0">
+        </div>
+        <div class="form-group">
+          <label>Tu comentario</label>
+          <textarea id="reviewText" placeholder="Contanos tu experiencia..." rows="3"></textarea>
+        </div>
+        <button class="auth-btn" style="max-width:200px" onclick="submitReview()">Publicar reseña</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="location">
+  <div class="location-inner">
+    <div class="reveal-left">
+      <div class="section-label">Ubicación</div>
+      <h2 class="location-heading">Cómo<br><em>llegar</em></h2>
+      <p class="location-address">25 de Mayo 105,<br>La Cumbre, Córdoba</p>
+      <p class="location-detail">A pasos del centro de La Cumbre</p>
+      <p class="location-detail">Estacionamiento disponible en la zona</p>
+      <p class="location-detail">Accesible para todos</p>
+      <a href="https://maps.google.com/?q=25+de+Mayo+105+La+Cumbre+Cordoba" target="_blank" class="directions-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Cómo llegar
+      </a>
+    </div>
+    <div class="map-container reveal">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3393.8!2d-64.4957!3d-30.9831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDU4JzU5LjIiUyA2NMKwMjknNDQuNSJX!5e0!3m2!1ses!2sar!4v1600000000000"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="section-label" style="justify-content:center">Contacto</div>
+      <h2 class="contact-heading">Reservá tu<br><em>turno hoy</em></h2>
+      <p class="contact-sub">Escribinos o contactanos por WhatsApp</p>
+      <a href="/cdn-cgi/l/email-protection#781d0e170b0c0d1c1117150c14381f15191114561b1715" class="contact-email"><span class="__cf_email__" data-cfemail="86e3f0e9f5f2f3e2efe9ebf2eac6e1ebe7efeaa8e5e9eb">[email&#160;protected]</span></a>
+      <div class="contact-buttons">
+        <a href="https://wa.me/5493548410943?text=Hola,%20quiero%20reservar%20un%20turno%20en%20Evolution%20Studio" class="btn-primary" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp
+        </a>
+        <a href="/cdn-cgi/l/email-protection#d0b5a6bfa3a4a5b4b9bfbda4bc90b7bdb1b9bcfeb3bfbd" class="btn-secondary">
+          Enviar email
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <span class="footer-logo">Evolution Studio</span>
+    <div class="footer-social">
+      <a href="#" title="Instagram" class="social-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+      </a>
+      <a href="#" title="Facebook" class="social-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+      </a>
+      <a href="https://wa.me/5493548410943" title="WhatsApp" class="social-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="#about">Nosotros</a>
+    <a href="#services">Servicios</a>
+    <a href="#cursos">Cursos</a>
+    <a href="#contact">Contacto</a>
+  </div>
+  <span class="footer-copy">© 2026 · La Cumbre, Córdoba</span>
+</footer>
+
+<!-- FLOATING WA BUTTON -->
+<a href="https://wa.me/5493548410943" class="wa-float" target="_blank" title="Escribinos por WhatsApp">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ================================================
+   STORAGE UTILITIES (simula backend con localStorage)
+   ================================================ */
+const DB = {
+  getUsers: () => JSON.parse(localStorage.getItem('evo_users') || '[]'),
+  saveUsers: (u) => localStorage.setItem('evo_users', JSON.stringify(u)),
+  getSession: () => JSON.parse(localStorage.getItem('evo_session') || 'null'),
+  saveSession: (u) => localStorage.setItem('evo_session', JSON.stringify(u)),
+  clearSession: () => localStorage.removeItem('evo_session'),
+  getTurnos: (uid) => JSON.parse(localStorage.getItem('evo_turnos_' + uid) || '[]'),
+  saveTurnos: (uid, t) => localStorage.setItem('evo_turnos_' + uid, JSON.stringify(t)),
+  getFavs: (uid) => JSON.parse(localStorage.getItem('evo_favs_' + uid) || '[]'),
+  saveFavs: (uid, f) => localStorage.setItem('evo_favs_' + uid, JSON.stringify(f)),
+  getResetTokens: () => JSON.parse(localStorage.getItem('evo_reset_tokens') || '{}'),
+  saveResetTokens: (t) => localStorage.setItem('evo_reset_tokens', JSON.stringify(t)),
+};
+
+/* ================================================
+   AUTH STATE
+   ================================================ */
+let currentUser = DB.getSession();
+
+function initApp() {
+  updateNavUI();
+  actualizarEstado();
+  setInterval(actualizarEstado, 60000);
+  initScrollReveal();
+  initNavScroll();
+  updateFavBtns();
+  setMinBookDate();
+}
+
+/* ================================================
+   MODAL SYSTEM
+   ================================================ */
+function openModal(id) {
+  closeAllModals();
+  document.getElementById(id).classList.add('active');
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAllModals() {
+  document.querySelectorAll('.auth-modal').forEach(m => m.classList.remove('active'));
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  clearErrors();
+}
+
+function switchModal(name) {
+  const map = { login: 'loginModal', register: 'registerModal', forgot: 'forgotModal', profile: 'profileModal', booking: 'bookingModal' };
+  openModal(map[name]);
+}
+
+document.getElementById('modalOverlay').addEventListener('click', closeAllModals);
+
+function clearErrors() {
+  document.querySelectorAll('.auth-error, .auth-success').forEach(e => { e.style.display = 'none'; e.textContent = ''; });
+}
+
+/* ================================================
+   TOGGLE PASSWORD VISIBILITY
+   ================================================ */
+function togglePass(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+  else { input.type = 'password'; btn.textContent = '👁'; }
+}
+
+/* ================================================
+   PASSWORD STRENGTH
+   ================================================ */
+function checkPassStrength(val) {
+  const el = document.getElementById('passStrength');
+  const fill = document.getElementById('strengthFill');
+  const text = document.getElementById('strengthText');
+  if (!val) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  let score = 0;
+  if (val.length >= 6) score++;
+  if (val.length >= 10) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const labels = ['Muy débil', 'Débil', 'Regular', 'Buena', 'Fuerte'];
+  const colors = ['#e53e3e', '#dd6b20', '#d69e2e', '#38a169', '#2b6cb0'];
+  fill.style.width = (score * 20) + '%';
+  fill.style.background = colors[score - 1] || colors[0];
+  text.textContent = labels[score - 1] || '';
+  text.style.color = colors[score - 1] || colors[0];
+}
+
+/* ================================================
+   REGISTER
+   ================================================ */
+function handleRegister() {
+  const nombre = document.getElementById('regNombre').value.trim();
+  const apellido = document.getElementById('regApellido').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const phone = document.getElementById('regPhone').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+  const terms = document.getElementById('acceptTerms').checked;
+  const err = document.getElementById('registerError');
+  const suc = document.getElementById('registerSuccess');
+
+  if (!nombre || !apellido || !email || !pass) return showError(err, 'Por favor completá todos los campos obligatorios.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError(err, 'El email no es válido.');
+  if (pass.length < 6) return showError(err, 'La contraseña debe tener al menos 6 caracteres.');
+  if (pass !== pass2) return showError(err, 'Las contraseñas no coinciden.');
+  if (!terms) return showError(err, 'Debés aceptar los términos y condiciones.');
+
+  const users = DB.getUsers();
+  if (users.find(u => u.email === email)) return showError(err, 'Ya existe una cuenta con ese email.');
+
+  const user = {
+    id: 'u_' + Date.now(),
+    nombre, apellido, email, phone,
+    password: btoa(pass), // simple encoding (in production use proper hashing)
+    createdAt: new Date().toISOString(),
+    provider: 'email'
+  };
+  users.push(user);
+  DB.saveUsers(users);
+
+  err.style.display = 'none';
+  showSuccess(suc, '✓ ¡Cuenta creada! Podés iniciar sesión ahora.');
+  setTimeout(() => switchModal('login'), 2000);
+}
+
+/* ================================================
+   LOGIN
+   ================================================ */
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
+  const remember = document.getElementById('rememberMe').checked;
+  const err = document.getElementById('loginError');
+
+  if (!email || !pass) return showError(err, 'Por favor ingresá tu email y contraseña.');
+
+  const users = DB.getUsers();
+  const user = users.find(u => u.email === email && u.password === btoa(pass));
+  if (!user) return showError(err, 'Email o contraseña incorrectos.');
+
+  DB.saveSession(user);
+  currentUser = user;
+  updateNavUI();
+  closeAllModals();
+  showToast('¡Bienvenido/a, ' + user.nombre + '! 👋');
+  updateFavBtns();
+}
+
+function socialLogin(provider) {
+  // Simulate Google/social login
+  const mockUser = {
+    id: 'u_social_' + Date.now(),
+    nombre: 'Usuario',
+    apellido: provider,
+    email: provider.toLowerCase() + '@demo.com',
+    phone: '',
+    password: '',
+    createdAt: new Date().toISOString(),
+    provider: provider.toLowerCase()
+  };
+  const users = DB.getUsers();
+  const existing = users.find(u => u.email === mockUser.email);
+  const user = existing || mockUser;
+  if (!existing) { users.push(user); DB.saveUsers(users); }
+  DB.saveSession(user);
+  currentUser = user;
+  updateNavUI();
+  closeAllModals();
+  showToast('¡Bienvenido/a con ' + provider + '! 👋');
+}
+
+/* ================================================
+   FORGOT PASSWORD
+   ================================================ */
+function handleForgot() {
+  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+  const err = document.getElementById('forgotError');
+  const suc = document.getElementById('forgotSuccess');
+  const form = document.getElementById('forgotForm');
+
+  if (!email) return showError(err, 'Por favor ingresá tu email.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError(err, 'El email no es válido.');
+
+  const users = DB.getUsers();
+  // We show success even if email not found (security best practice)
+  if (users.find(u => u.email === email)) {
+    // Simulate token generation
+    const token = Math.random().toString(36).substring(2, 15);
+    const tokens = DB.getResetTokens();
+    tokens[token] = { email, expires: Date.now() + 3600000 };
+    DB.saveResetTokens(tokens);
+    // In real app: send email with link containing token
+    console.log('[DEMO] Reset link: ?reset=' + token + ' para ' + email);
+  }
+
+  form.style.display = 'none';
+  err.style.display = 'none';
+  suc.style.display = 'flex';
+  suc.style.flexDirection = 'column';
+  suc.style.alignItems = 'center';
+  suc.style.gap = '8px';
+}
+
+/* ================================================
+   LOGOUT
+   ================================================ */
+function handleLogout() {
+  DB.clearSession();
+  currentUser = null;
+  updateNavUI();
+  closeAllModals();
+  toggleUserMenu(true);
+  showToast('Sesión cerrada. ¡Hasta pronto! 👋');
+}
+
+function confirmDelete() {
+  if (confirm('¿Estás segura/o de que querés eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+    const users = DB.getUsers().filter(u => u.id !== currentUser.id);
+    DB.saveUsers(users);
+    handleLogout();
+  }
+}
+
+/* ================================================
+   NAV UI UPDATE
+   ================================================ */
+function updateNavUI() {
+  const guest = document.getElementById('userAreaGuest');
+  const logged = document.getElementById('userAreaLogged');
+  if (currentUser) {
+    guest.style.display = 'none';
+    logged.style.display = 'flex';
+    document.getElementById('navAvatar').textContent = currentUser.nombre[0].toUpperCase();
+    document.getElementById('navUserName').textContent = currentUser.nombre;
+  } else {
+    guest.style.display = 'flex';
+    logged.style.display = 'none';
+  }
+}
+
+function requireLogin(callback) {
+  if (currentUser) { callback(); }
+  else { openModal('loginModal'); showToast('Iniciá sesión para continuar'); }
+}
+
+/* ================================================
+   USER DROPDOWN
+   ================================================ */
+let dropdownOpen = false;
+function toggleUserMenu(forceClose) {
+  const dd = document.getElementById('userDropdown');
+  if (forceClose || dropdownOpen) { dd.classList.remove('open'); dropdownOpen = false; }
+  else { dd.classList.add('open'); dropdownOpen = true; }
+}
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('userMenuBtn')?.contains(e.target)) {
+    document.getElementById('userDropdown')?.classList.remove('open');
+    dropdownOpen = false;
+  }
+});
+
+/* ================================================
+   PROFILE MODAL
+   ================================================ */
+function openProfile() {
+  toggleUserMenu(true);
+  openModal('profileModal');
+  loadProfileData();
+}
+
+function loadProfileData() {
+  if (!currentUser) return;
+  const u = currentUser;
+  document.getElementById('profileAvatar').textContent = u.nombre[0].toUpperCase();
+  document.getElementById('profileName').textContent = u.nombre + ' ' + u.apellido;
+  document.getElementById('profileSince').textContent = new Date(u.createdAt).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+  document.getElementById('editNombre').value = u.nombre;
+  document.getElementById('editApellido').value = u.apellido;
+  document.getElementById('editEmail').value = u.email;
+  document.getElementById('editPhone').value = u.phone || '';
+  renderTurnos();
+  renderFavoritos();
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function saveProfile() {
+  const nombre = document.getElementById('editNombre').value.trim();
+  const apellido = document.getElementById('editApellido').value.trim();
+  const email = document.getElementById('editEmail').value.trim().toLowerCase();
+  const phone = document.getElementById('editPhone').value.trim();
+  const oldPass = document.getElementById('editPassOld').value;
+  const newPass = document.getElementById('editPassNew').value;
+  const newPass2 = document.getElementById('editPassNew2').value;
+  const err = document.getElementById('datosEditError');
+  const suc = document.getElementById('datosEditSuccess');
+
+  if (!nombre || !apellido || !email) return showError(err, 'Nombre, apellido y email son obligatorios.');
+
+  let users = DB.getUsers();
+  const idx = users.findIndex(u => u.id === currentUser.id);
+  if (idx === -1) return;
+
+  if (newPass) {
+    if (users[idx].password !== btoa(oldPass)) return showError(err, 'La contraseña actual es incorrecta.');
+    if (newPass.length < 6) return showError(err, 'La nueva contraseña debe tener al menos 6 caracteres.');
+    if (newPass !== newPass2) return showError(err, 'Las nuevas contraseñas no coinciden.');
+    users[idx].password = btoa(newPass);
+  }
+
+  users[idx] = { ...users[idx], nombre, apellido, email, phone };
+  DB.saveUsers(users);
+  DB.saveSession(users[idx]);
+  currentUser = users[idx];
+  updateNavUI();
+  loadProfileData();
+  err.style.display = 'none';
+  showSuccess(suc, '✓ Datos actualizados correctamente.');
+}
+
+/* ================================================
+   TURNOS
+   ================================================ */
+function renderTurnos() {
+  const list = document.getElementById('turnosList');
+  const turnos = DB.getTurnos(currentUser.id);
+  if (!turnos.length) {
+    list.innerHTML = '<div class="empty-state"><span>📅</span><p>Todavía no tenés turnos reservados.</p><p style="font-size:0.75rem;color:var(--dim)">Reservá tu primer turno y aparecerá aquí.</p></div>';
+    return;
+  }
+  list.innerHTML = turnos.slice().reverse().map(t => {
+    const past = new Date(t.date + 'T' + t.time) < new Date();
+    return `<div class="turno-item ${past ? 'past' : 'upcoming'}">
+      <div class="turno-status-dot ${past ? 'past' : 'upcoming'}"></div>
+      <div class="turno-info">
+        <strong>${t.service}</strong>
+        <span>${formatDate(t.date)} · ${t.time}</span>
+        ${t.notes ? '<span class="turno-notes">' + t.notes + '</span>' : ''}
+      </div>
+      <div class="turno-badge ${past ? 'past' : 'upcoming'}">${past ? 'Completado' : 'Próximo'}</div>
+      ${!past ? `<button class="turno-cancel" onclick="cancelTurno('${t.id}')">Cancelar</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function formatDate(dateStr) {
+  const [y, m, d] = dateStr.split('-');
+  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  return d + ' ' + months[parseInt(m) - 1] + '. ' + y;
+}
+
+function cancelTurno(id) {
+  if (!confirm('¿Cancelar este turno?')) return;
+  let turnos = DB.getTurnos(currentUser.id).filter(t => t.id !== id);
+  DB.saveTurnos(currentUser.id, turnos);
+  renderTurnos();
+  showToast('Turno cancelado.');
+}
+
+/* ================================================
+   BOOKING
+   ================================================ */
+function setMinBookDate() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate() + 1).padStart(2, '0');
+  const dateInput = document.getElementById('bookDate');
+  if (dateInput) dateInput.min = yyyy + '-' + mm + '-' + dd;
+}
+
+function openBooking() {
+  document.getElementById('bookingSuccess').style.display = 'none';
+  document.getElementById('bookingStepsContent').style.display = 'block';
+  openModal('bookingModal');
+}
+
+function bookService(serviceName) {
+  requireLogin(() => {
+    openBooking();
+    setTimeout(() => {
+      const sel = document.getElementById('bookService');
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === serviceName) { sel.selectedIndex = i; break; }
+      }
+    }, 100);
+  });
+}
+
+function handleBooking() {
+  const service = document.getElementById('bookService').value;
+  const date = document.getElementById('bookDate').value;
+  const time = document.getElementById('bookTime').value;
+  const notes = document.getElementById('bookNotes').value.trim();
+  const err = document.getElementById('bookingError');
+  const suc = document.getElementById('bookingSuccess');
+
+  if (!service || !date || !time) return showError(err, 'Por favor completá todos los campos requeridos.');
+
+  // Check day of week (no Sundays)
+  const day = new Date(date + 'T12:00:00').getDay();
+  if (day === 0) return showError(err, 'No atendemos los domingos. Elegí otro día.');
+
+  const turno = { id: 't_' + Date.now(), service, date, time, notes, prof: document.getElementById('bookProf')?.value || 'Sin especificar', createdAt: new Date().toISOString() };
+  const turnos = DB.getTurnos(currentUser.id);
+  turnos.push(turno);
+  DB.saveTurnos(currentUser.id, turnos);
+
+  err.style.display = 'none';
+  document.getElementById('bookingStepsContent').style.display = 'none';
+  suc.style.display = 'block';
+  showToast('¡Turno reservado para el ' + formatDate(date) + '! 🎉');
+  setTimeout(closeAllModals, 3000);
+}
+
+/* ================================================
+   FAVORITES
+   ================================================ */
+function toggleFav(name, btn) {
+  if (!currentUser) { showToast('Iniciá sesión para guardar favoritos ❤️'); openModal('loginModal'); return; }
+  let favs = DB.getFavs(currentUser.id);
+  if (favs.includes(name)) {
+    favs = favs.filter(f => f !== name);
+    btn.textContent = '♡';
+    btn.classList.remove('fav-active');
+    showToast('Eliminado de favoritos');
+  } else {
+    favs.push(name);
+    btn.textContent = '♥';
+    btn.classList.add('fav-active');
+    showToast('Guardado en favoritos ❤️');
+  }
+  DB.saveFavs(currentUser.id, favs);
+}
+
+function updateFavBtns() {
+  if (!currentUser) return;
+  const favs = DB.getFavs(currentUser.id);
+  document.querySelectorAll('.fav-btn').forEach(btn => {
+    const name = btn.getAttribute('onclick').match(/toggleFav\('([^']+)'/)?.[1];
+    if (name && favs.includes(name)) { btn.textContent = '♥'; btn.classList.add('fav-active'); }
+    else { btn.textContent = '♡'; btn.classList.remove('fav-active'); }
+  });
+}
+
+function renderFavoritos() {
+  const grid = document.getElementById('favGrid');
+  const favs = DB.getFavs(currentUser.id);
+  if (!favs.length) {
+    grid.innerHTML = '<div class="empty-state"><span>❤️</span><p>No tenés servicios guardados.</p><p style="font-size:0.75rem;color:var(--dim)">Tocá el corazón en cualquier servicio para guardarlo aquí.</p></div>';
+    return;
+  }
+  grid.innerHTML = favs.map(f => `
+    <div class="fav-item">
+      <span>${f}</span>
+      <button class="fav-item-book" onclick="closeAllModals(); bookService('${f}')">Reservar</button>
+    </div>
+  `).join('');
+}
+
+/* ================================================
+   TOAST
+   ================================================ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ================================================
+   FORM HELPERS
+   ================================================ */
+function showError(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+function showSuccess(el, msg) { el.innerHTML = msg; el.style.display = 'block'; }
+
+/* ================================================
+   NAVBAR SCROLL
+   ================================================ */
+function initNavScroll() {
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+}
+
+/* ================================================
+   SCROLL REVEAL
+   ================================================ */
+function initScrollReveal() {
+  const reveals = document.querySelectorAll('.reveal, .reveal-left');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+}
+
+/* ================================================
+   OPEN/CLOSED STATUS
+   ================================================ */
+function actualizarEstado() {
+  const ahora = new Date();
+  const diaSemana = ahora.getDay(); // 0=Dom
+  const hora = ahora.getHours();
+  const estado = document.getElementById("status");
+  const texto = document.getElementById("statusText");
+  const abierto = diaSemana >= 1 && diaSemana <= 6 && hora >= 9 && hora < 21;
+  texto.textContent = abierto ? "Abierto ahora" : "Cerrado";
+  estado.classList.toggle("abierto", abierto);
+  estado.classList.toggle("cerrado", !abierto);
+}
+
+/* ================================================
+   CHECK URL FOR RESET TOKEN (demo)
+   ================================================ */
+function checkResetToken() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('reset');
+  if (!token) return;
+  const tokens = DB.getResetTokens();
+  if (tokens[token] && tokens[token].expires > Date.now()) {
+    const email = tokens[token].email;
+    const newPass = prompt('Ingresá tu nueva contraseña para ' + email + ':');
+    if (newPass && newPass.length >= 6) {
+      let users = DB.getUsers();
+      const idx = users.findIndex(u => u.email === email);
+      if (idx !== -1) { users[idx].password = btoa(newPass); DB.saveUsers(users); }
+      delete tokens[token]; DB.saveResetTokens(tokens);
+      showToast('Contraseña actualizada. ¡Ya podés iniciar sesión!');
+      history.replaceState(null, '', window.location.pathname);
+    }
+  }
+}
+
+/* ================================================
+   PROFESSIONAL SELECTOR
+   ================================================ */
+function selectProf(btn, name) {
+  document.querySelectorAll('.prof-option').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('bookProf').value = name;
+}
+
+/* ================================================
+   STAR PICKER
+   ================================================ */
+let selectedStars = 0;
+function pickStar(val) {
+  selectedStars = val;
+  document.getElementById('reviewStars').value = val;
+  document.querySelectorAll('.star-pick').forEach((s, i) => {
+    s.classList.toggle('active', i < val);
+  });
+}
+
+/* ================================================
+   REVIEWS - USER SUBMITTED
+   ================================================ */
+function submitReview() {
+  const name = document.getElementById('reviewName').value.trim();
+  const service = document.getElementById('reviewService').value.trim();
+  const stars = parseInt(document.getElementById('reviewStars').value);
+  const text = document.getElementById('reviewText').value.trim();
+
+  if (!name || !text) return showToast('Por favor completá tu nombre y comentario.');
+  if (stars === 0) return showToast('Seleccioná una puntuación.');
+
+  const review = { id: 'r_' + Date.now(), name, service, stars, text, createdAt: new Date().toISOString() };
+  const reviews = JSON.parse(localStorage.getItem('evo_reviews') || '[]');
+  reviews.push(review);
+  localStorage.setItem('evo_reviews', JSON.stringify(reviews));
+
+  // Show success
+  document.getElementById('reviewForm').style.display = 'none';
+  document.getElementById('reviewFormMsg').style.display = 'block';
+
+  // Add card to grid
+  addReviewCard(review);
+  showToast('¡Gracias por tu reseña! ❤️');
+}
+
+function addReviewCard(r) {
+  const grid = document.querySelector('.reviews-grid');
+  const starsStr = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
+  const card = document.createElement('div');
+  card.className = 'review-card';
+  card.innerHTML = `
+    <div class="review-top">
+      <div class="reviewer-avatar">${r.name.charAt(0).toUpperCase()}</div>
+      <div>
+        <strong class="reviewer-name">${r.name}</strong>
+        <div class="stars">${starsStr}</div>
+      </div>
+    </div>
+    <p class="review-text">"${r.text}"</p>
+    <div class="review-meta">${r.service || 'Cliente'} · recién ahora</div>
+  `;
+  grid.appendChild(card);
+}
+
+function loadSavedReviews() {
+  const reviews = JSON.parse(localStorage.getItem('evo_reviews') || '[]');
+  reviews.forEach(addReviewCard);
+}
+
+/* ================================================
+   BOOKING - include prof in turno
+   ================================================ */
+const _origHandleBooking = handleBooking;
+
+window.addEventListener('DOMContentLoaded', () => {
+  checkResetToken();
+  initApp();
+  loadSavedReviews();
+});
+</script>
+</body>
+</html>
