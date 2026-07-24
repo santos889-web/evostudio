@@ -400,12 +400,12 @@
 let currentUser = null;
 
 function initApp() {
-  updateNavUI();
-  actualizarEstado();
-  setInterval(actualizarEstado, 60000);
+  //updateNavUI();
+  //actualizarEstado();
+  //setInterval(actualizarEstado, 60000);
   initScrollReveal();
   initNavScroll();
-  updateFavBtns();
+  //updateFavBtns();
   setMinBookDate();
 }
 
@@ -566,106 +566,21 @@ function pickStar(val) {
 }
 
 /* ================================================
-   REVIEWS - USER SUBMITTED
-   ================================================ */
-function getStoredReviews() {
-  try {
-    return JSON.parse(localStorage.getItem('evo_reviews') || '[]');
-  } catch {
-    return [];
-  }
-}
-
-function saveStoredReviews(reviews) {
-  localStorage.setItem('evo_reviews', JSON.stringify(reviews));
-}
-
-function submitReview() {
-  const name = document.getElementById('reviewName').value.trim();
-  const service = document.getElementById('reviewService').value.trim();
-  const stars = parseInt(document.getElementById('reviewStars').value);
-  const text = document.getElementById('reviewText').value.trim();
-
-  if (!name || !text) return showToast('Por favor completá tu nombre y comentario.');
-  if (stars === 0) return showToast('Seleccioná una puntuación.');
-
-  const review = { id: 'r_' + Date.now(), name, service, stars, text, createdAt: new Date().toISOString() };
-  const reviews = getStoredReviews();
-  reviews.push(review);
-  saveStoredReviews(reviews);
-
-  document.getElementById('reviewFormMsg').style.display = 'block';
-  document.getElementById('reviewForm').reset();
-  document.getElementById('reviewStars').value = '0';
-  selectedStars = 0;
-  document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('active'));
-
-  addReviewCard(review);
-  showToast('¡Gracias por tu reseña! ❤️');
-}
-
-function addReviewCard(r) {
-  const grid = document.querySelector('.reviews-grid');
-  if (!grid) return;
-  const starsStr = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
-  const card = document.createElement('div');
-  card.className = 'review-card reveal';
-  card.setAttribute('data-dynamic', 'true');
-  card.innerHTML = `
-    <div class="review-top">
-      <div class="reviewer-avatar">${r.name.charAt(0).toUpperCase()}</div>
-      <div>
-        <strong class="reviewer-name">${r.name}</strong>
-        <div class="stars">${starsStr}</div>
-      </div>
-    </div>
-    <p class="review-text">"${r.text}"</p>
-    <div class="review-meta">${r.service || 'Cliente'} · recién ahora</div>
-  `;
-  grid.appendChild(card);
-}
-
-function loadSavedReviews() {
-  const grid = document.querySelector('.reviews-grid');
-  if (!grid) return;
-  const dynamicCards = grid.querySelectorAll('.review-card[data-dynamic="true"]');
-  dynamicCards.forEach(card => card.remove());
-  getStoredReviews().forEach(addReviewCard);
-}
-
-
-window.addEventListener('DOMContentLoaded', () => {
-  initApp();
-  loadSavedReviews();
-});
-
-
-
-
-
-
-
-
-
-
-
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
-<script>
-/* ================================================
-   REVIEWS - FIREBASE + LOCAL FALLBACK
+   REVIEWS - FIRESTORE
    ================================================ */
 const firebaseConfig = {
-  apiKey: 'TU_API_KEY',
-  authDomain: 'TU_PROJECT_ID.firebaseapp.com',
-  projectId: 'TU_PROJECT_ID',
-  storageBucket: 'TU_PROJECT_ID.firebasestorage.app',
-  messagingSenderId: 'TU_MESSAGING_SENDER_ID',
-  appId: 'TU_APP_ID'
+  apiKey: "AIzaSyBAavXXNR52KNfNGdn5-dUsplOdQDS5Phg",
+  authDomain: "evostudio-47b29.firebaseapp.com",
+  projectId: "evostudio-47b29",
+  storageBucket: "evostudio-47b29.firebasestorage.app",
+  messagingSenderId: "932873756958",
+  appId: "1:932873756958:web:fcc8a20a4c9cc7be36a90f",
+  measurementId: "G-P9BV3LJEX6"
 };
 
 let firestoreDb = null;
 let firestoreReady = false;
+let reviewsUnsubscribe = null;
 
 function initFirebase() {
   if (typeof firebase === 'undefined') {
@@ -679,6 +594,7 @@ function initFirebase() {
     }
     firestoreDb = firebase.firestore();
     firestoreReady = true;
+    listenToReviews();
   } catch (error) {
     console.error('No se pudo inicializar Firebase:', error);
     firestoreReady = false;
@@ -700,7 +616,7 @@ function saveStoredReviews(reviews) {
 function addReviewCard(r) {
   const grid = document.querySelector('.reviews-grid');
   if (!grid) return;
-  const starsStr = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
+  const starsStr = '★'.repeat(r.stars || 0) + '☆'.repeat(5 - (r.stars || 0));
   const card = document.createElement('div');
   card.className = 'review-card reveal';
   card.setAttribute('data-dynamic', 'true');
@@ -718,28 +634,42 @@ function addReviewCard(r) {
   grid.appendChild(card);
 }
 
-async function loadSavedReviews() {
+function renderReviews(reviews) {
   const grid = document.querySelector('.reviews-grid');
   if (!grid) return;
 
   const dynamicCards = grid.querySelectorAll('.review-card[data-dynamic="true"]');
   dynamicCards.forEach(card => card.remove());
 
-  if (firestoreReady) {
-    try {
-      const snapshot = await firestoreDb.collection('reviews').orderBy('createdAt', 'desc').get();
-      const firestoreReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      if (firestoreReviews.length) {
-        firestoreReviews.forEach(addReviewCard);
-        saveStoredReviews(firestoreReviews);
-        return;
-      }
-    } catch (error) {
-      console.error('Error al cargar reseñas desde Firestore:', error);
-    }
+  (reviews || []).forEach(addReviewCard);
+}
+
+function listenToReviews() {
+  if (!firestoreReady || !firestoreDb) return;
+
+  if (reviewsUnsubscribe) {
+    reviewsUnsubscribe();
   }
 
-  getStoredReviews().forEach(addReviewCard);
+  reviewsUnsubscribe = firestoreDb
+    .collection('reviews')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(
+      (snapshot) => {
+        const firestoreReviews = snapshot.docs.map(doc => {
+          const data = doc.data();
+          const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt;
+          return { id: doc.id, ...data, createdAt };
+        });
+
+        saveStoredReviews(firestoreReviews);
+        renderReviews(firestoreReviews);
+      },
+      (error) => {
+        console.error('Error al escuchar reseñas desde Firestore:', error);
+        renderReviews(getStoredReviews());
+      }
+    );
 }
 
 async function submitReview() {
@@ -751,7 +681,7 @@ async function submitReview() {
   if (!name || !text) return showToast('Por favor completá tu nombre y comentario.');
   if (stars === 0) return showToast('Seleccioná una puntuación.');
 
-  const review = {
+  const localReview = {
     id: 'r_' + Date.now(),
     name,
     service,
@@ -760,22 +690,33 @@ async function submitReview() {
     createdAt: new Date().toISOString()
   };
 
+  const reviewPayload = {
+    name,
+    service,
+    stars,
+    text,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
   if (firestoreReady) {
     try {
-      await firestoreDb.collection('reviews').add(review);
+      const docRef = await firestoreDb.collection('reviews').add(reviewPayload);
+      localReview.id = docRef.id;
       const currentReviews = getStoredReviews();
-      currentReviews.unshift(review);
+      currentReviews.unshift({ ...localReview, id: docRef.id });
       saveStoredReviews(currentReviews);
     } catch (error) {
       console.error('Error al guardar reseña en Firestore:', error);
       const currentReviews = getStoredReviews();
-      currentReviews.unshift(review);
+      currentReviews.unshift(localReview);
       saveStoredReviews(currentReviews);
+      renderReviews(currentReviews);
     }
   } else {
     const currentReviews = getStoredReviews();
-    currentReviews.unshift(review);
+    currentReviews.unshift(localReview);
     saveStoredReviews(currentReviews);
+    renderReviews(currentReviews);
   }
 
   document.getElementById('reviewFormMsg').style.display = 'block';
@@ -784,14 +725,12 @@ async function submitReview() {
   selectedStars = 0;
   document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('active'));
 
-  addReviewCard(review);
   showToast('¡Gracias por tu reseña! ❤️');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   initApp();
   initFirebase();
-  loadSavedReviews();
 });
 </script>
 </body>
