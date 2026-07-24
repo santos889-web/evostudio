@@ -244,41 +244,7 @@
       <span class="reviews-toggle-icon">▾</span>
     </button>
     <div id="reviewsList" class="reviews-list" hidden>
-      <div class="reviews-grid">
-        <div class="review-card reveal">
-          <div class="review-top">
-            <div class="reviewer-avatar">M</div>
-            <div>
-              <strong class="reviewer-name">Martina G.</strong>
-              <div class="stars">★★★★★</div>
-            </div>
-          </div>
-          <p class="review-text">"El mejor lugar para cortarse el pelo en La Cumbre. Atención impecable, ambiente increíble y resultados profesionales."</p>
-          <div class="review-meta">Cliente frecuente · hace 2 semanas</div>
-        </div>
-        <div class="review-card reveal" style="transition-delay:0.1s">
-          <div class="review-top">
-            <div class="reviewer-avatar">L</div>
-            <div>
-              <strong class="reviewer-name">Lucía P.</strong>
-              <div class="stars">★★★★★</div>
-            </div>
-          </div>
-          <p class="review-text">"Fui por el tratamiento facial y fue una experiencia completamente diferente. Resultados visibles desde la primera sesión."</p>
-          <div class="review-meta">Tratamientos faciales · hace 1 mes</div>
-        </div>
-        <div class="review-card reveal" style="transition-delay:0.2s">
-          <div class="review-top">
-            <div class="reviewer-avatar">S</div>
-            <div>
-              <strong class="reviewer-name">Santiago R.</strong>
-              <div class="stars">★★★★★</div>
-            </div>
-          </div>
-          <p class="review-text">"El servicio de barbería es top. Profesionales que realmente saben lo que hacen. Muy recomendable."</p>
-          <div class="review-meta">Barbería · hace 3 semanas</div>
-        </div>
-      </div>
+      <div class="reviews-grid"></div>
     </div>
     <!-- DEJAR RESEÑA -->
     <div class="leave-review reveal">
@@ -646,6 +612,7 @@ function addReviewCard(r) {
   card.className = 'review-card reveal';
   card.setAttribute('data-dynamic', 'true');
   card.innerHTML = `
+    <button class="review-delete-btn" type="button" onclick="deleteReview('${r.id || ''}')">Eliminar</button>
     <div class="review-top">
       <div class="reviewer-avatar">${(r.name || 'C').charAt(0).toUpperCase()}</div>
       <div>
@@ -695,6 +662,28 @@ function listenToReviews() {
         renderReviews(getStoredReviews());
       }
     );
+}
+
+async function deleteReview(reviewId) {
+  if (!reviewId) return;
+
+  if (firestoreReady && firestoreDb) {
+    try {
+      await firestoreDb.collection('reviews').doc(reviewId).delete();
+      const currentReviews = getStoredReviews().filter(review => review.id !== reviewId);
+      saveStoredReviews(currentReviews);
+      renderReviews(currentReviews);
+      showToast('Reseña eliminada');
+      return;
+    } catch (error) {
+      console.error('Error al eliminar la reseña en Firestore:', error);
+    }
+  }
+
+  const currentReviews = getStoredReviews().filter(review => review.id !== reviewId);
+  saveStoredReviews(currentReviews);
+  renderReviews(currentReviews);
+  showToast('Reseña eliminada');
 }
 
 async function submitReview() {
