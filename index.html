@@ -239,39 +239,45 @@
   <div class="reviews-inner">
     <div class="section-label reveal">Opiniones</div>
     <h2 class="reviews-heading reveal">Lo que dicen<br><em>nuestros clientes</em></h2>
-    <div class="reviews-grid">
-      <div class="review-card reveal">
-        <div class="review-top">
-          <div class="reviewer-avatar">M</div>
-          <div>
-            <strong class="reviewer-name">Martina G.</strong>
-            <div class="stars">★★★★★</div>
+    <button type="button" class="reviews-toggle" id="reviewsToggle" onclick="toggleReviewsList()" aria-expanded="false" aria-controls="reviewsList">
+      <span class="reviews-toggle-label">Ver reseñas</span>
+      <span class="reviews-toggle-icon">▾</span>
+    </button>
+    <div id="reviewsList" class="reviews-list" hidden>
+      <div class="reviews-grid">
+        <div class="review-card reveal">
+          <div class="review-top">
+            <div class="reviewer-avatar">M</div>
+            <div>
+              <strong class="reviewer-name">Martina G.</strong>
+              <div class="stars">★★★★★</div>
+            </div>
           </div>
+          <p class="review-text">"El mejor lugar para cortarse el pelo en La Cumbre. Atención impecable, ambiente increíble y resultados profesionales."</p>
+          <div class="review-meta">Cliente frecuente · hace 2 semanas</div>
         </div>
-        <p class="review-text">"El mejor lugar para cortarse el pelo en La Cumbre. Atención impecable, ambiente increíble y resultados profesionales."</p>
-        <div class="review-meta">Cliente frecuente · hace 2 semanas</div>
-      </div>
-      <div class="review-card reveal" style="transition-delay:0.1s">
-        <div class="review-top">
-          <div class="reviewer-avatar">L</div>
-          <div>
-            <strong class="reviewer-name">Lucía P.</strong>
-            <div class="stars">★★★★★</div>
+        <div class="review-card reveal" style="transition-delay:0.1s">
+          <div class="review-top">
+            <div class="reviewer-avatar">L</div>
+            <div>
+              <strong class="reviewer-name">Lucía P.</strong>
+              <div class="stars">★★★★★</div>
+            </div>
           </div>
+          <p class="review-text">"Fui por el tratamiento facial y fue una experiencia completamente diferente. Resultados visibles desde la primera sesión."</p>
+          <div class="review-meta">Tratamientos faciales · hace 1 mes</div>
         </div>
-        <p class="review-text">"Fui por el tratamiento facial y fue una experiencia completamente diferente. Resultados visibles desde la primera sesión."</p>
-        <div class="review-meta">Tratamientos faciales · hace 1 mes</div>
-      </div>
-      <div class="review-card reveal" style="transition-delay:0.2s">
-        <div class="review-top">
-          <div class="reviewer-avatar">S</div>
-          <div>
-            <strong class="reviewer-name">Santiago R.</strong>
-            <div class="stars">★★★★★</div>
+        <div class="review-card reveal" style="transition-delay:0.2s">
+          <div class="review-top">
+            <div class="reviewer-avatar">S</div>
+            <div>
+              <strong class="reviewer-name">Santiago R.</strong>
+              <div class="stars">★★★★★</div>
+            </div>
           </div>
+          <p class="review-text">"El servicio de barbería es top. Profesionales que realmente saben lo que hacen. Muy recomendable."</p>
+          <div class="review-meta">Barbería · hace 3 semanas</div>
         </div>
-        <p class="review-text">"El servicio de barbería es top. Profesionales que realmente saben lo que hacen. Muy recomendable."</p>
-        <div class="review-meta">Barbería · hace 3 semanas</div>
       </div>
     </div>
     <!-- DEJAR RESEÑA -->
@@ -563,6 +569,25 @@ function pickStar(val) {
   document.querySelectorAll('.star-pick').forEach((s, i) => {
     s.classList.toggle('active', i < val);
   });
+}
+
+function toggleReviewsList() {
+  const list = document.getElementById('reviewsList');
+  const button = document.getElementById('reviewsToggle');
+  const label = button?.querySelector('.reviews-toggle-label');
+  const isOpen = !list.hasAttribute('hidden');
+
+  if (isOpen) {
+    list.setAttribute('hidden', '');
+    button?.setAttribute('aria-expanded', 'false');
+    button?.classList.remove('is-open');
+    if (label) label.textContent = 'Ver reseñas';
+  } else {
+    list.removeAttribute('hidden');
+    button?.setAttribute('aria-expanded', 'true');
+    button?.classList.add('is-open');
+    if (label) label.textContent = 'Ocultar reseñas';
+  }
 }
 
 /* ================================================
