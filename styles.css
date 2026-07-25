@@ -892,6 +892,10 @@ section { padding: 120px 48px; }
 .hours-status.cerrado { border-color: rgba(229,62,62,0.3); color: #fc8181; }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
 .hours-time {
   font-family: var(--serif); font-size: clamp(3rem, 8vw, 6rem); font-weight: 300;
   color: var(--pure); letter-spacing: -0.02em; line-height: 1;
@@ -901,6 +905,64 @@ section { padding: 120px 48px; }
 .hours-stat { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .hours-stat-num { font-family: var(--serif); font-size: 2.5rem; color: var(--accent); font-weight: 300; }
 .hours-stat-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); }
+
+/* ================================================
+   WEDDINGS
+   ================================================ */
+#weddings { background: linear-gradient(135deg, var(--deep), var(--charcoal)); }
+.weddings-inner { max-width: 1200px; margin: 0 auto; padding: 72px 24px; }
+.weddings-card {
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  padding: 40px; border-radius: 18px; position: relative; overflow: hidden;
+}
+.weddings-card::before {
+  content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(200,184,154,0.08), transparent 60%);
+  pointer-events: none;
+}
+.weddings-copy { position: relative; z-index: 1; }
+.weddings-title {
+  font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); color: var(--pure);
+  line-height: 1.08; margin: 16px 0 18px;
+}
+.weddings-title em { font-style: italic; color: var(--silver); }
+.weddings-text, .weddings-note {
+  color: var(--light); line-height: 1.8; font-size: 0.95rem;
+}
+.weddings-services {
+  display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 18px;
+}
+.weddings-services span {
+  border: 1px solid rgba(255,255,255,0.12); padding: 8px 12px;
+  border-radius: 999px; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver);
+}
+.weddings-visual {
+  position: relative; min-height: 280px; border-radius: 14px;
+  background: radial-gradient(circle at top left, rgba(200,184,154,0.18), transparent 45%),
+              linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08); overflow: hidden;
+}
+.weddings-badge {
+  position: absolute; top: 20px; left: 20px; padding: 10px 14px; z-index: 2;
+  background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--pure); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.weddings-carousel { position: relative; width: 100%; height: 100%; min-height: 280px; }
+.weddings-slide {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center;
+  display: block; opacity: 0; transition: opacity 0.8s ease;
+  padding-bottom: 0%;
+}
+.weddings-slide.active { opacity: 1; }
+.weddings-carousel-dots {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 2;
+  display: flex; gap: 8px;
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.45);
+  transition: background 0.3s ease;
+}
+.dot.active { background: var(--accent); }
 
 /* ================================================
    REVIEWS
@@ -929,8 +991,32 @@ section { padding: 120px 48px; }
 .review-card {
   background: var(--deep); padding: 32px; border: 1px solid rgba(255,255,255,0.05);
   transition: border-color 0.3s ease, transform 0.3s ease; border-radius: 2px;
+  position: relative;
 }
 .review-card:hover { border-color: rgba(200,184,154,0.2); transform: translateY(-4px); }
+.review-delete-btn {
+  position: absolute; top: 12px; right: 12px;
+  border: 0; background: transparent; color: var(--dim);
+  font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+  cursor: pointer; padding: 0;
+}
+.review-delete-btn:hover { color: var(--accent); }
+.google-review-prompt {
+  margin: 16px 0 24px; padding: 20px; border: 1px solid rgba(200,184,154,0.24);
+  background: rgba(255,255,255,0.04); border-radius: 6px;
+}
+.google-review-prompt p { margin: 0 0 8px; color: var(--light); line-height: 1.6; }
+.google-review-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.google-review-btn, .google-review-skip {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 999px; padding: 10px 16px;
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none;
+}
+.google-review-btn { background: var(--accent); color: var(--black); }
+.google-review-skip { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--light); }
+.google-review-btn:hover { filter: brightness(1.08); }
+.google-review-skip:hover { border-color: var(--accent); color: var(--pure); }
 .review-top { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .reviewer-avatar {
   width: 36px; height: 36px; border-radius: 50%;
@@ -1079,6 +1165,11 @@ footer {
   .auth-modal.wide-modal { max-width: calc(100% - 32px); }
   .form-row-two { grid-template-columns: 1fr; }
   .form-row-space { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .weddings-card { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
+  .weddings-title { font-size: clamp(1.75rem, 4.8vw, 2.4rem); }
+  .weddings-services { gap: 8px; }
+  .weddings-services span { font-size: 0.64rem; padding: 7px 10px; }
+  .weddings-visual { min-height: 260px; }
 }
 
 @media (max-width: 600px) {
@@ -1090,6 +1181,16 @@ footer {
   .services-header h2 { font-size: 2.5rem; }
   .wa-float { bottom: 16px; right: 16px; width: 46px; height: 46px; }
   footer { padding: 28px 20px; }
+  .weddings-inner { padding: 48px 12px; }
+  .weddings-card { padding: 20px 16px; border-radius: 14px; }
+  .weddings-title { margin: 10px 0 12px; font-size: 1.7rem; line-height: 1.12; }
+  .weddings-text, .weddings-note { font-size: 0.88rem; line-height: 1.7; }
+  .weddings-services { margin: 16px 0; }
+  .weddings-services span { width: calc(50% - 6px); justify-content: center; text-align: center; }
+  .weddings-visual { min-height: 220px; }
+  .weddings-carousel { min-height: 220px; }
+  .weddings-badge { top: 12px; left: 12px; padding: 8px 10px; font-size: 0.62rem; letter-spacing: 0.12em; }
+  .weddings-carousel-dots { bottom: 12px; }
 }
 /* ================================================
    PROFESSIONAL SELECTOR
@@ -1192,27 +1293,33 @@ footer {
   text-transform: uppercase;
   color: var(--dim);
 }
+.gallery-mobile-indicator {
+  display: none;
+}
 .gallery-cta-text {
   color: var(--silver);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   margin-bottom: 16px;
 }
 .gallery-ig-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 24px;
+  padding: 12px 28px;
   border: 1px solid rgba(200,184,154,0.4);
   border-radius: 100px;
   color: var(--accent);
   text-decoration: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s ease;
 }
 .gallery-ig-btn:hover {
   background: rgba(200,184,154,0.08);
   border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
 /* ================================================
@@ -1276,4 +1383,39 @@ footer {
   #gallery { padding: 80px 20px; }
   .prof-selector { gap: 8px; }
   .prof-option { padding: 10px 12px; min-width: 60px; }
+  .gallery-mobile-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto 24px;
+    padding: 16px 18px;
+    border: 1px solid rgba(200,184,154,0.24);
+    border-radius: 16px;
+    background: rgba(200,184,154,0.08);
+    max-width: 360px;
+  }
+  .gallery-mobile-arrow {
+    font-size: 1.8rem;
+    color: var(--accent);
+    line-height: 1;
+    animation: bounceDown 1.1s ease-in-out infinite;
+  }
+  .gallery-mobile-copy {
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-align: center;
+  }
+  .gallery-ig-btn--mobile {
+    width: 100%;
+    max-width: 260px;
+    padding: 13px 22px;
+    font-size: 0.92rem;
+  }
+  .gallery-cta-text {
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
 }
